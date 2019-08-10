@@ -1,0 +1,141 @@
+1. Who checked out the book 'The Hobbit’?
+SQL语句：select member.name from member, checkout_item, book where book.id = checkout_item.book_id and member.id = checkout_item.member_id and book.title = 'The Hobbit';
+查询结果：Anand Beck
+
+2.How many people have not checked out anything?
+SQL语句：select count(*) from member where member.id not in (select member_id from checkout_item);
+查询结果：37
+
+3.What books and movies aren't checked out?
+SQL语句1：select title from book where book.id in (select id from book except select book_id from checkout_item);
+SQL语句2：select title from movie where movie.id in (select id from movie except select movie_id from checkout_item);
+查询结果1：
+Fellowship of the Ring
+1984
+Tom Sawyer
+Catcher in the Rye
+To Kill a Mockingbird
+Domain Driven Design
+查询结果2：
+Thin Red Line
+Crouching Tiger, Hidden Dragon
+Lawrence of Arabia
+Office Space
+
+4.Add the book 'The Pragmatic Programmer', and add yourself as a member. Check out 'The Pragmatic Programmer'. Use your query from question 1 to verify that you have checked it out. Also, provide the SQL used to update the database.
+SQL语句:
+insert into member (id, name) values (43, 'xusong');
+insert into book(id,title) values(11, 'The Pragmatic Programmer');
+insert into checkout_item(member_id, book_id) values(43, 11);
+select member.name from member, checkout_item, book where book.id = checkout_item.book_id and member.id = checkout_item.member_id and book.title = 'The Pragmatic Programmer';
+查询结果：xusong
+
+5.Who has checked out more that 1 item? 
+Tip: Research the GROUP BY syntax.
+SQL语句：select name from member, (select member_id as id, count(*) as itemsNum from checkout_item group by member_id) as T where member.id=T.id and itemsNum >1;
+查询结果：
+Anand Beck
+Frank Smith
+
+
+参考信息：
+CREATE TABLE checkout_item (
+  member_id integer,
+  book_id integer,
+  movie_id integer,
+  unique(member_id, book_id, movie_id) on conflict replace,
+  unique(book_id),
+  unique(movie_id)
+)
+CREATE TABLE member (
+  id integer primary key,
+  name text,
+  unique(name)
+)
+CREATE TABLE book (
+  id integer primary key,
+  title text,
+  unique(title)
+)
+CREATE TABLE movie (
+  id integer primary key,
+  title text,
+  unique(title)
+)
+
+select * from movie;
+1|Life of Brian
+2|Airplane
+3|Rush
+4|Day of the Dead
+5|Star Wars
+6|Thin Red Line
+7|Crouching Tiger, Hidden Dragon
+8|Lawrence of Arabia
+9|Office Space
+
+select * from book;
+1|Life of Pi
+2|Fellowship of the Ring
+3|Two Towers
+4|Dune
+5|The Hobbit
+6|1984
+7|Tom Sawyer
+8|Catcher in the Rye
+9|To Kill a Mockingbird
+10|Domain Driven Design
+
+select * from checkout_item;
+6|1|
+1|3|
+2|4|
+1|5|
+1||1
+7||2
+6||3
+8||4
+6||5
+select * from member;
+1|Anand Beck
+2|Yaxuan Evans
+3|Sneha Wang
+4|Judy Li
+5|Anand Huang
+6|Frank Smith
+7|Sneha Carmack
+8|Julian Listov
+9|Raquel Singh
+10|Mauro Smith
+11|Raquel Listov
+12|Tanuj Fowler
+13|Frank Listov
+14|Alok Jain
+15|Alok Knuth
+16|Frank Beck
+17|Scott Huang
+18|Anand Schneider
+19|Julian Evans
+20|Mauro Singh
+21|Scott Knuth
+22|Faris Wang
+23|Anand Smith
+24|Frank Singh
+25|Alok Gupta
+26|Mauro Knuth
+27|Frank Wang
+28|Nandini Fowler
+29|Mauro Hunt
+30|Scott Jain
+31|Alok Carmack
+32|Billy Knuth
+33|Tanuj Schneider
+34|Faris Huang
+35|Anand Li
+36|Julian Huang
+37|Julian Schneider
+38|Judy Singh
+39|Nandini Carmack
+40|Tanuj Listov
+41|Naval Hunt
+42|Schweta Jain
